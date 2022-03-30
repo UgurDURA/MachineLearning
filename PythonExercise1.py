@@ -101,3 +101,5 @@ print(result)
 result2 = np.mean(np.square(a-b))
 print("\nThe result of Substriction between two matrixes with np functions: ")
 print(result2)
+
+
