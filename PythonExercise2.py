@@ -71,12 +71,27 @@ print(last_col)
 plt.scatter(last_col, first_col)
 
 
+# -------------------------------------------------------
+# QUESTION3 
+
 y_mean = np.mean(first_col)
 
 plt.plot([0,14], [y_mean, y_mean])
-plt.hlines(y_mean, xmin=0, xmax=14)
+
+# plt.hlines(y_mean, xmin=0, xmax=14) same with above
 
 
+# -------------------------------------------------------
+# QUESTION4 
 
+# The mean square error (MSE) provides a statistic that allows for researchers 
+# to make such claims. MSE simply refers to the mean of the squared difference 
+# between the predicted parameter and the observed parameter.
+#  
+# To find the MSE, take the observed value, subtract the predicted value, and square
+#  that difference. Repeat that for all observations. Then, sum all of those squared 
+# values and divide by the number of observations.
 
+mse = np.mean(np.square(first_col - y_mean))
+print("Mean Square Error : ",mse)
 plt.show()
