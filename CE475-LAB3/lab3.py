@@ -37,14 +37,21 @@ def calculator_coef(matrix, out):
     coef = np.dot(np.dot(np.linalg.inv(np.dot(matrix_t, matrix)), matrix_t), out)
     y_prediction = np.dot(matrix, coef)
     error = np.abs(out - y_prediction)
+    return y_prediction 
 
-    plt.scatter(y_prediction, error)
-    plt.title("Residual Error Plot")
-    plt.xlabel("Predictions")
-    plt.ylabel("Error")
+def calculateMSE(y_actual,y_estimated):
+    total = np.array([])
 
-    return y_prediction, plt
+    for i in range (len(y_actual)):
+        difference = y_actual[i]-y_estimated[i]
+        squarredDifference = difference**2
+        total = total + squarredDifference
+    MSE = total / len(y_actual)
 
+
+
+
+  
 
 
 

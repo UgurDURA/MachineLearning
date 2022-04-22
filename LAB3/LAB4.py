@@ -72,3 +72,4 @@ sal_pred_1 = simling_plot(mental_list_1, salary_list_1, b0, b1)
 sal_pred_2 = simling_plot(mental_list_2, salary_list_2, b2, b3)
 
 plt.show()
+
