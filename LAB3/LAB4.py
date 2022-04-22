@@ -8,7 +8,7 @@ mental_list_1 = np.array([])
 mental_list_2 = np.array([])
 
 
-with open('Football_players(4).csv', encoding="utf8", errors='ignore') as f:
+with open('LAB3/Football_players(4).csv', encoding="utf8", errors='ignore') as f:
     data = list(csv.reader(f))
 
 print(data)
@@ -21,8 +21,8 @@ for row in data:
 for row in data:
     if row != data[0]:
         if data.index(row) > 20:
-            salary_list_1 = np.append(salary_list_2, int(row[8]))
-            mental_list_1 = np.append(mental_list_2, int(row[6]))
+            salary_list_2 = np.append(salary_list_2, int(row[8]))
+            mental_list_2 = np.append(mental_list_2, int(row[6]))
 
 
 print(salary_list_1)
