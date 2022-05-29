@@ -160,12 +160,12 @@ def calculate_PDF_NonParametric(columnName):
     plt.show()
 
 
-calculate_PDF_NonParametric("X1")
-calculate_PDF_NonParametric("X2")
-calculate_PDF_NonParametric("X3")
-calculate_PDF_NonParametric("X4")
-calculate_PDF_Parametric(X_5)
-calculate_PDF_NonParametric("X6")
+# calculate_PDF_NonParametric("X1")
+# calculate_PDF_NonParametric("X2")
+# calculate_PDF_NonParametric("X3")
+# calculate_PDF_NonParametric("X4")
+# calculate_PDF_Parametric(X_5)
+# calculate_PDF_NonParametric("X6")
 
 
 
@@ -192,8 +192,10 @@ figure = sns.heatmap(correlationResult, cmap = "Blues", annot = True, xticklabel
 
 
 pandasDF.__delitem__("X6")
+X_Matrix = np.delete(X_combined_matrix, 5, 1)
 
 print(pandasDF)
+print(X_Matrix)
 
 ############################################################################################################################################
                                             #Selection of Accuracy and Error Metrics
@@ -242,6 +244,12 @@ def calculator_error(out, out_pred, metric):
 ############################################################################################################################################
 
 
+train_data = np.zeros
+test_data = np.zeros
+
+train_Y = np.zeros
+test_Y = np.zeros
+
 def kFold(matrix, y, k):
 
     splited_matrix = np.array_split(matrix, k)
@@ -250,7 +258,15 @@ def kFold(matrix, y, k):
 
     y_splitted = np.array_split(y,k)
     train_Y = np.concatenate(np.delete(y_splitted, k-1, axis=0))
+    test_Y = y_splitted[k-1]
 
-    
+    return train_data, test_data, train_Y, test_Y
+
+train_data, test_data, train_Y, test_Y = kFold(X_Matrix,Y,10)
+
+print("Training Data")
+print(train_data)
+print("\n Test Data")
+print(test_data)
 
 
