@@ -1,4 +1,5 @@
 import csv
+from nis import match
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -193,3 +194,63 @@ figure = sns.heatmap(correlationResult, cmap = "Blues", annot = True, xticklabel
 pandasDF.__delitem__("X6")
 
 print(pandasDF)
+
+############################################################################################################################################
+                                            #Selection of Accuracy and Error Metrics
+############################################################################################################################################
+
+def calculator_error(out, out_pred, metric):
+    rss = 0
+    tss = 0
+    average_y = np.average(out)
+
+    for i in range(len(out)):
+        if len(out) == len(out_pred):
+            rss += (out[i] - out_pred[i]) ** 2
+            tss += (out[i] - average_y) ** 2
+
+    r_square = 1 - (rss / tss)
+    MAE = np.mean(np.sqrt(rss))
+    MSE = np.mean(rss)
+    RMSE = np.sqrt(MSE)
+
+    def _MSE():
+        return MSE
+    def _rSquare():
+        return r_square
+    def _MAE():
+        return MAE
+    def _RMSE():
+        return RMSE
+    
+    switcher = {
+        "rSquare": rSquare,
+        "MSE": _MSE,
+        "MAE": _MAE,
+        "RMSE": _RMSE
+
+    }
+    def switch(metricName):
+        return switcher.get(metricName)
+
+    return switch(metric)
+
+
+
+############################################################################################################################################
+                                            #Multiple Linear Regression with k-Fold Validation
+############################################################################################################################################
+
+
+def kFold(matrix, y, k):
+
+    splited_matrix = np.array_split(matrix, k)
+    train_data = np.concatenate(np.delete(splited_matrix, k-1, axis=0))
+    test_data = splited_matrix[k-1]
+
+    y_splitted = np.array_split(y,k)
+    train_Y = np.concatenate(np.delete(y_splitted, k-1, axis=0))
+
+    
+
+
