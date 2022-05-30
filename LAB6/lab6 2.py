@@ -23,7 +23,7 @@ def MSE(y, y_prediction):
     return mse
 
 
-with open('LAB6/Football_players(11).csv', encoding="utf8", errors='ignore') as f:
+with open('Football_players(11).csv', encoding="utf8", errors='ignore') as f:
     data = list(csv.reader(f))
 
 print(data)

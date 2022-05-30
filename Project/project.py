@@ -12,8 +12,11 @@ from scipy.stats import shapiro
 from numpy import float64, linspace
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import export_text
+import rfpimp
+
 
 np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)   
+from statsmodels.stats.outliers_influence import variance_inflation_factor
  
 
 
@@ -246,6 +249,13 @@ def calculate_PDF_NonParametric(columnName):
 
 # figure.savefig("CorrelationMatrix_Sperman.png", dpi = 1200)
 
+vif_data = pd.DataFrame()
+vif_data["feature"] = pandasDF.columns
+vif_data["VIF"] = [variance_inflation_factor(pandasDF.values, i)
+                          for i in range(len(pandasDF.columns))]
+  
+print(vif_data)
+
 
  
 ############################################################################################################################################
@@ -293,18 +303,12 @@ def calculator_error(y_actual, y_pred, metric):
 ############################################################################################################################################
 
 
-train_data = np.zeros
-test_data = np.zeros
-
-train_Y = np.zeros
-test_Y = np.zeros
 
 def kFold(matrix, y, k):
 
     splited_matrix = np.array_split(matrix, k)
     train_data = np.concatenate(np.delete(splited_matrix, k-1, axis=0))
     test_data = splited_matrix[k-1]
-
     y_splitted = np.array_split(y,k)
     train_Y = np.concatenate(np.delete(y_splitted, k-1, axis=0))
     test_Y = y_splitted[k-1]
@@ -330,10 +334,12 @@ def MultipleLinearRegression(X_matrix, Y_actual):
 
     return B_hat
 
-# coefficients = MultipleLinearRegression(train_data, train_Y)
-# Y_predictions = np.dot(train_data, coefficients)
-# print("Y Predictions : ")
-# print(Y_predictions)
+train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 25)
+coefficients = MultipleLinearRegression(train_data, train_Y)
+Y_predictions = np.dot(train_data, coefficients)
+print("Y Predictions : ")
+print(Y_predictions)
+
 
 # r_error= calculator_error(train_Y, Y_predictions, "rSquare")
 # MSE = calculator_error(train_Y, Y_predictions, "MSE")
@@ -405,17 +411,17 @@ for i in range(1, 5):
 
  
  
-plt.plot(r_square)
-plt.show()
+# plt.plot(r_square)
+# plt.show()
 
-plt.plot(mse)
-plt.show()
+# plt.plot(mse)
+# plt.show()
 
-plt.plot(mae)
-plt.show()
+# plt.plot(mae)
+# plt.show()
 
-plt.plot(rmse)
-plt.show()
+# plt.plot(rmse)
+# plt.show()
 
 
 
@@ -435,17 +441,18 @@ def MSE(y, y_prediction):
 train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 10)
 
 
-randomForestRegressor = RandomForestRegressor(max_depth=13, random_state=0)
+randomForestRegressor = RandomForestRegressor(max_depth=12, random_state=0)
 randomForestRegressor.fit(train_data,train_Y)
 
-pred_Y = randomForestRegressor.predict(train_data)
+pred_Y = randomForestRegressor.predict(test_data)
 
 
-r_error= calculator_error(train_Y, pred_Y, "rSquare")
+r_error= calculator_error(test_Y, pred_Y, "rSquare")
 
 print("==========================> R^2 for Random Forest = ", r_error)
 
 print(pred_Y)
+
 
 MSE_Result = MSE(test_Y,pred_Y )
 
@@ -528,15 +535,15 @@ rmse = np.array([])
 
 
 print("Random Forest with k-fold Validation")
-for i in range(1, 5):
+for i in range(1, 11):
     train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 5 * i)
-    randomForestRegressor = RandomForestRegressor(max_depth=13, random_state=0)
+    randomForestRegressor = RandomForestRegressor(max_depth=12, random_state=0)
     randomForestRegressor.fit(train_data,train_Y)
-    Y_predictions = randomForestRegressor.predict(train_data)
-    r_error= calculator_error(train_Y, Y_predictions, "rSquare")
-    MSE = calculator_error(train_Y, Y_predictions, "MSE")
-    MAE = calculator_error(train_Y, Y_predictions, "MAE")
-    RMSE = calculator_error(train_Y, Y_predictions, "RMSE")
+    Y_predictions = randomForestRegressor.predict(test_data)
+    r_error= calculator_error(test_Y, Y_predictions, "rSquare")
+    MSE = calculator_error(test_Y, Y_predictions, "MSE")
+    MAE = calculator_error(test_Y, Y_predictions, "MAE")
+    RMSE = calculator_error(test_Y, Y_predictions, "RMSE")
     rmse = np.append(rmse, RMSE)
     mse = np.append(mse, MSE)
     mae = np.append(mae, MAE)
