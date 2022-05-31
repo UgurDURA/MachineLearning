@@ -468,11 +468,22 @@ e5 = Y-p5
 # plt.plot(e5)
 
 plt.plot(MultipleLinearRegression_RSquareError_CV)
+plt.show()
+plt.plot(MultipleLinearRegression_MSEError_CV)
+plt.show()
+plt.plot(MultipleLinearRegression_MAEError_CV)
 # plt.plot(e2_1)
 # plt.plot(e3_1)
 # plt.plot(e4_1)
 
 plt.show()
+
+for i in range (0,4):
+    print("======================================================================================================")
+    print("R^2 Results with Cross Validation: " , MultipleLinearRegression_RSquareError_CV[i])
+    print("MSE Results with Cross Validation:" , MultipleLinearRegression_MSEError_CV[i])
+    print("MAE Results with Cross Validation: ", MultipleLinearRegression_MAEError_CV[i])
+    print("======================================================================================================")
  
 plt.scatter(np.linspace(1, len(e1), len(e1)), e1, c='b', label="Errors w/ 5-fold CV")
 plt.scatter(np.linspace(1, len(e2), len(e2)), e2, c='r', label="Errors w/ 10-fold CV")
