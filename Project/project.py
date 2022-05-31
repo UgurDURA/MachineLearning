@@ -304,18 +304,18 @@ def calculator_error(y_actual, y_pred, metric):
 
 
 
-# def kFold(matrix, y, k):
+def kFold(matrix, y, k):
 
-#     splited_matrix = np.array_split(matrix, k)
-#     train_data = np.concatenate(np.delete(splited_matrix, k-1, axis=0))
-#     test_data = splited_matrix[k-1]
-#     y_splitted = np.array_split(y,k)
-#     train_Y = np.concatenate(np.delete(y_splitted, k-1, axis=0))
-#     test_Y = y_splitted[k-1]
+    splited_matrix = np.array_split(matrix, k)
+    train_data = np.concatenate(np.delete(splited_matrix, k-1, axis=0))
+    test_data = splited_matrix[k-1]
+    y_splitted = np.array_split(y,k)
+    train_Y = np.concatenate(np.delete(y_splitted, k-1, axis=0))
+    test_Y = y_splitted[k-1]
 
-#     return train_data, test_data, train_Y, test_Y
+    return train_data, test_data, train_Y, test_Y
 
-# train_data, test_data, train_Y, test_Y = kFold(X_Matrix,Y,60)
+train_data, test_data, train_Y, test_Y = kFold(X_Matrix,Y,60)
 
 # print("Training Data")
 # print(train_data)
@@ -323,7 +323,7 @@ def calculator_error(y_actual, y_pred, metric):
 # print(test_data)
 
 ############################################################################################################################################
-                                            #Multiple Linear Regression
+                                            #Multiple Linear Regression with Different Train-Test Split 
 ############################################################################################################################################
 
 
@@ -340,6 +340,43 @@ def mullin_coef(X, y):
 coefficients = mullin_coef(X_Matrix, Y)
 Y_predictions_MultiLinearRegression = np.dot(X_Matrix, coefficients)
 RSS = Y-Y_predictions_MultiLinearRegression
+
+mse = np.array([], dtype=float64)
+r_square = np.array([])
+mae = np.array([])
+rmse = np.array([])
+
+for i in range(1,11):
+    train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 5 * i)
+    coefficients = mullin_coef(train_data, train_Y)
+    Y_predictions_MultiLinearRegression = np.dot(test_data, coefficients)
+    r_error= calculator_error(test_Y, Y_predictions_MultiLinearRegression, "RSquare")
+    MSE = calculator_error(test_Y, Y_predictions_MultiLinearRegression, "MSE")
+    MAE = calculator_error(test_Y, Y_predictions_MultiLinearRegression, "MAE")
+    RMSE = calculator_error(test_Y, Y_predictions_MultiLinearRegression, "RMSE")
+    rmse = np.append(rmse, RMSE)
+    mse = np.append(mse, MSE)
+    mae = np.append(mae, MAE)
+    r_square = np.append(r_square, r_error)
+    print("For k = ", i*5)
+    print("R^2 = ", r_error)
+    print("MAE = ", MAE)
+    print("MSE = ", MSE)
+    print("RMSE = ", RMSE)
+    print()
+
+
+plt.plot(r_square)
+plt.show()
+
+plt.plot(mse)
+plt.show()
+
+plt.plot(mae)
+plt.show()
+
+plt.plot(rmse)
+plt.show()
 
 plt.plot(RSS)
 
@@ -430,14 +467,14 @@ MultipleLinearRegression_MAEError_CV = np.append(MultipleLinearRegression_MAEErr
 # plt.plot(e4)
 
 
-plt.plot(MultipleLinearRegression_RSquareError_CV)
-plt.show()
+# plt.plot(MultipleLinearRegression_RSquareError_CV)
+# plt.show()
 
-plt.plot(MultipleLinearRegression_MSEError_CV)
-plt.show()
+# plt.plot(MultipleLinearRegression_MSEError_CV)
+# plt.show()
 
-plt.plot(MultipleLinearRegression_MAEError_CV)
-plt.show()
+# plt.plot(MultipleLinearRegression_MAEError_CV)
+# plt.show()
 
 for i in range (0,4):
     print("======================================================================================================")
@@ -446,18 +483,18 @@ for i in range (0,4):
     print("MAE Results with Cross Validation: ", MultipleLinearRegression_MAEError_CV[i])
     print("======================================================================================================")
  
-plt.scatter(np.linspace(1, len(e1), len(e1)), e1, c='b', label="Errors w/ 5-fold CV")
-plt.scatter(np.linspace(1, len(e2), len(e2)), e2, c='r', label="Errors w/ 10-fold CV")
-plt.scatter(np.linspace(1, len(e3), len(e3)), e3, c='y', label="Errors w/ 20-fold CV")
-plt.scatter(np.linspace(1, len(e4), len(e4)), e4, c='m', label="Errors w/ 25-fold CV")
-plt.scatter(np.linspace(1, len(RSS), len(RSS)),RSS, c='g', label="Training errors")
-plt.hlines(0, xmin=0, xmax=len(e1), colors='k', label="Zero error line")
-plt.title("Plot: Error Values")
-plt.xlabel("Prediction no.")
-plt.ylabel("Error")
-plt.xticks(np.arange(1, len(e1), 2))
-plt.legend()
-plt.show()
+# plt.scatter(np.linspace(1, len(e1), len(e1)), e1, c='b', label="Errors w/ 5-fold CV")
+# plt.scatter(np.linspace(1, len(e2), len(e2)), e2, c='r', label="Errors w/ 10-fold CV")
+# plt.scatter(np.linspace(1, len(e3), len(e3)), e3, c='y', label="Errors w/ 20-fold CV")
+# plt.scatter(np.linspace(1, len(e4), len(e4)), e4, c='m', label="Errors w/ 25-fold CV")
+# plt.scatter(np.linspace(1, len(RSS), len(RSS)),RSS, c='g', label="Training errors")
+# plt.hlines(0, xmin=0, xmax=len(e1), colors='k', label="Zero error line")
+# plt.title("Plot: Error Values")
+# plt.xlabel("Prediction no.")
+# plt.ylabel("Error")
+# plt.xticks(np.arange(1, len(e1), 2))
+# plt.legend()
+# plt.show()
 
 
 
@@ -483,7 +520,7 @@ randomForestRegressor.fit(train_data,train_Y)
 pred_Y = randomForestRegressor.predict(test_data)
 
 
-r_error= calculator_error(test_Y, pred_Y, "rSquare")
+r_error= calculator_error(test_Y, pred_Y, "RSquare")
 
 print("==========================> R^2 for Random Forest = ", r_error)
 
@@ -540,23 +577,23 @@ tree4 = export_text(underlying_tree4[0],feature_names= features_X)
 tree5 = export_text(underlying_tree5[0],feature_names= features_X)
 tree6 = export_text(underlying_tree6[0],feature_names= features_X)
 
-print("tree with depth 1:")
-print(tree1)
-print("tree with depth 3:")
-print(tree2)
-print("tree with depth 4:")
-print(tree3)
-print("tree with depth 6:")
-print(tree4)
+# print("tree with depth 1:")
+# print(tree1)
+# print("tree with depth 3:")
+# print(tree2)
+# print("tree with depth 4:")
+# print(tree3)
+# print("tree with depth 6:")
+# print(tree4)
 
-print("tree with depth 8:")
-print(tree5)
-print("tree with depth 12:")
-print(tree6)
+# print("tree with depth 8:")
+# print(tree5)
+# print("tree with depth 12:")
+# print(tree6)
 
 
-plt.plot(MSE_Results)
-plt.show()
+# plt.plot(MSE_Results)
+# plt.show()
 
 
 ############################################################################################################################################
@@ -576,7 +613,7 @@ for i in range(1, 11):
     randomForestRegressor = RandomForestRegressor(max_depth=12, random_state=0)
     randomForestRegressor.fit(train_data,train_Y)
     Y_predictions = randomForestRegressor.predict(test_data)
-    r_error= calculator_error(test_Y, Y_predictions, "rSquare")
+    r_error= calculator_error(test_Y, Y_predictions, "RSquare")
     MSE = calculator_error(test_Y, Y_predictions, "MSE")
     MAE = calculator_error(test_Y, Y_predictions, "MAE")
     RMSE = calculator_error(test_Y, Y_predictions, "RMSE")
@@ -591,14 +628,14 @@ for i in range(1, 11):
     print("RMSE = ", RMSE)
     print()
 
-plt.plot(r_square)
-plt.show()
+# plt.plot(r_square)
+# plt.show()
 
-plt.plot(mse)
-plt.show()
+# plt.plot(mse)
+# plt.show()
 
-plt.plot(mae)
-plt.show()
+# plt.plot(mae)
+# plt.show()
 
-plt.plot(rmse)
-plt.show()
+# plt.plot(rmse)
+# plt.show()
