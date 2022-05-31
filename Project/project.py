@@ -283,7 +283,7 @@ def calculator_error(y_actual, y_pred, metric):
 
     r_square = 1 - (rss / tss)
     MAE = np.mean(sum(np.abs(y_actual - y_pred)))
-    MSE = np.mean(rss)
+    MSE = np.mean(sum((y_actual - y_pred) ** 2))
     RMSE = np.sqrt(MSE)
 
     if metric == "RSquare":
@@ -346,7 +346,7 @@ r_square = np.array([])
 mae = np.array([])
 rmse = np.array([])
 
-for i in range(1,11):
+for i in range(1,6):
     train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 5 * i)
     coefficients = mullin_coef(train_data, train_Y)
     Y_predictions_MultiLinearRegression = np.dot(test_data, coefficients)
@@ -365,20 +365,34 @@ for i in range(1,11):
     print("RMSE = ", RMSE)
     print()
 
-
-plt.plot(r_square)
+plt.rcParams["figure.figsize"] = [7.50, 3.50]
+plt.rcParams["figure.autolayout"] = True
+x = [5,10,15,20,25]
+default_x_ticks = range(len(x))
+plt.xlabel("Test Size (%)")
+plt.ylabel("R^2 Results")
+line1, = plt.plot(default_x_ticks,r_square, label="R^2")
+plt.xticks(default_x_ticks, x)
 plt.show()
+# line2, = plt.plot(mse, label="MSE")
+# line3, = plt.plot(mae, label="MAE")
+# line4, = plt.plot(rmse, label="RMSE")
+# leg = plt.legend(loc='upper center')
 
-plt.plot(mse)
-plt.show()
 
-plt.plot(mae)
-plt.show()
 
-plt.plot(rmse)
-plt.show()
 
-plt.plot(RSS)
+
+# plt.plot(r_square)
+
+# plt.plot(mse)
+
+
+# plt.plot(mae)
+
+
+# plt.plot(rmse)
+# plt.show()
 
 # train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 25)
 # coefficients = MultipleLinearRegression(train_data, train_Y)
@@ -483,18 +497,18 @@ for i in range (0,4):
     print("MAE Results with Cross Validation: ", MultipleLinearRegression_MAEError_CV[i])
     print("======================================================================================================")
  
-# plt.scatter(np.linspace(1, len(e1), len(e1)), e1, c='b', label="Errors w/ 5-fold CV")
-# plt.scatter(np.linspace(1, len(e2), len(e2)), e2, c='r', label="Errors w/ 10-fold CV")
-# plt.scatter(np.linspace(1, len(e3), len(e3)), e3, c='y', label="Errors w/ 20-fold CV")
-# plt.scatter(np.linspace(1, len(e4), len(e4)), e4, c='m', label="Errors w/ 25-fold CV")
-# plt.scatter(np.linspace(1, len(RSS), len(RSS)),RSS, c='g', label="Training errors")
-# plt.hlines(0, xmin=0, xmax=len(e1), colors='k', label="Zero error line")
-# plt.title("Plot: Error Values")
-# plt.xlabel("Prediction no.")
-# plt.ylabel("Error")
-# plt.xticks(np.arange(1, len(e1), 2))
-# plt.legend()
-# plt.show()
+plt.scatter(np.linspace(1, len(e1), len(e1)), e1, c='b', label="Errors w/ 5-fold CV")
+plt.scatter(np.linspace(1, len(e2), len(e2)), e2, c='r', label="Errors w/ 10-fold CV")
+plt.scatter(np.linspace(1, len(e3), len(e3)), e3, c='y', label="Errors w/ 20-fold CV")
+plt.scatter(np.linspace(1, len(e4), len(e4)), e4, c='m', label="Errors w/ 25-fold CV")
+plt.scatter(np.linspace(1, len(RSS), len(RSS)),RSS, c='g', label="Training errors")
+plt.hlines(0, xmin=0, xmax=len(e1), colors='k', label="Zero error line")
+plt.title("Plot: Error Values")
+plt.xlabel("Prediction no.")
+plt.ylabel("Error")
+plt.xticks(np.arange(1, len(e1), 2))
+plt.legend()
+plt.show()
 
 
 
