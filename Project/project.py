@@ -443,6 +443,20 @@ MultipleLinearRegression_RSquareError_CV = np.append(MultipleLinearRegression_RS
 MultipleLinearRegression_RSquareError_CV = np.append(MultipleLinearRegression_RSquareError_CV, calculator_error(Y, p3, "RSquare") )
 MultipleLinearRegression_RSquareError_CV = np.append(MultipleLinearRegression_RSquareError_CV, calculator_error(Y, p4, "RSquare") )
 
+MultipleLinearRegression_MSEError_CV = np.array([],dtype=float64)
+MultipleLinearRegression_MSEError_CV = np.append(MultipleLinearRegression_MSEError_CV, calculator_error(Y, p1, "MSE") )
+MultipleLinearRegression_MSEError_CV = np.append(MultipleLinearRegression_MSEError_CV, calculator_error(Y, p2, "MSE") )
+MultipleLinearRegression_MSEError_CV = np.append(MultipleLinearRegression_MSEError_CV, calculator_error(Y, p3, "MSE") )
+MultipleLinearRegression_MSEError_CV = np.append(MultipleLinearRegression_MSEError_CV, calculator_error(Y, p4, "MSE") )
+
+MultipleLinearRegression_MAEError_CV = np.array([],dtype=float64)
+MultipleLinearRegression_MAEError_CV = np.append(MultipleLinearRegression_MAEError_CV, calculator_error(Y,p1, "MAE"))
+MultipleLinearRegression_MAEError_CV = np.append(MultipleLinearRegression_MAEError_CV, calculator_error(Y,p2, "MAE"))
+MultipleLinearRegression_MAEError_CV = np.append(MultipleLinearRegression_MAEError_CV, calculator_error(Y,p3, "MAE"))
+MultipleLinearRegression_MAEError_CV = np.append(MultipleLinearRegression_MAEError_CV, calculator_error(Y,p4, "MAE"))
+
+
+
 coefficients = mullin_coef(X_Matrix, Y)
 p5 = np.dot(X_Matrix, coefficients)
 e5 = Y-p5
