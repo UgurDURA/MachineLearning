@@ -327,12 +327,21 @@ def calculator_error(y_actual, y_pred, metric):
 ############################################################################################################################################
 
 
-def MultipleLinearRegression(X_matrix, Y_actual):
-    B_hat = np.linalg.inv(np.dot(X_matrix.T, X_matrix))
-    B_hat = np.dot(B_hat, X_matrix.T)
-    B_hat = np.dot(B_hat, Y_actual)
+def mullin_coef(X, y):
+    # Calculating coefficients using the linear algebra equation:
+    B_hat = np.dot(X.T, X)
+    B_hat = np.linalg.inv(B_hat)
+    B_hat = np.dot(B_hat, X.T)
+    B_hat = np.dot(B_hat, y)
 
     return B_hat
+
+
+coefficients = mullin_coef(X_Matrix, Y)
+Y_predictions_MultiLinearRegression = np.dot(X_Matrix, coefficients)
+RSS = Y-Y_predictions_MultiLinearRegression
+
+plt.plot(RSS)
 
 # train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 25)
 # coefficients = MultipleLinearRegression(train_data, train_Y)
@@ -354,49 +363,8 @@ def MultipleLinearRegression(X_matrix, Y_actual):
 
 
 ############################################################################################################################################
-                                            #Multiple Linear Regression with Only Normal Distributions (Predictors)
-############################################################################################################################################
-
-# X_Matrix = np.delete(X_Matrix, 4, 1)
-
-# print(X_Matrix)
-
-# train_data, test_data, train_Y, test_Y = kFold(X_Matrix,Y,10)
-
-# coefficients = MultipleLinearRegression(train_data, train_Y)
-# Y_predictions = np.dot(train_data, coefficients)
-# print("Y Predictions : ")
-# print(Y_predictions)
-
-# r_error= calculator_error(train_Y, Y_predictions, "rSquare")
-# MSE = calculator_error(train_Y, Y_predictions, "MSE")
-# MAE = calculator_error(train_Y, Y_predictions, "MAE")
-# RMSE = calculator_error(train_Y, Y_predictions, "RMSE")
-
-
-# print("R^2 ==> ", r_error)
-# print("MAE = ", MAE)
-# print("MSE = ", MSE)
-# print("RMSE = ", RMSE)
-
-############################################################################################################################################
                                             #Multiple Linear Regression with Cross Validation and K-Fold
 ############################################################################################################################################
-# from 5 to 20
-mse = np.array([], dtype=float64)
-r_square = np.array([])
-mae = np.array([])
-rmse = np.array([])
-
-
-def mullin_coef(X, y):
-    # Calculating coefficients using the linear algebra equation:
-    B_hat = np.dot(X.T, X)
-    B_hat = np.linalg.inv(B_hat)
-    B_hat = np.dot(B_hat, X.T)
-    B_hat = np.dot(B_hat, y)
-
-    return B_hat
 
 
 def k_fold_cv(X, y, k):
@@ -456,26 +424,19 @@ MultipleLinearRegression_MAEError_CV = np.append(MultipleLinearRegression_MAEErr
 MultipleLinearRegression_MAEError_CV = np.append(MultipleLinearRegression_MAEError_CV, calculator_error(Y,p4, "MAE"))
 
 
-
-coefficients = mullin_coef(X_Matrix, Y)
-p5 = np.dot(X_Matrix, coefficients)
-e5 = Y-p5
-
 # plt.plot(e1)
 # plt.plot(e2)
 # plt.plot(e3)
 # plt.plot(e4)
-# plt.plot(e5)
+
 
 plt.plot(MultipleLinearRegression_RSquareError_CV)
 plt.show()
+
 plt.plot(MultipleLinearRegression_MSEError_CV)
 plt.show()
-plt.plot(MultipleLinearRegression_MAEError_CV)
-# plt.plot(e2_1)
-# plt.plot(e3_1)
-# plt.plot(e4_1)
 
+plt.plot(MultipleLinearRegression_MAEError_CV)
 plt.show()
 
 for i in range (0,4):
@@ -489,7 +450,7 @@ plt.scatter(np.linspace(1, len(e1), len(e1)), e1, c='b', label="Errors w/ 5-fold
 plt.scatter(np.linspace(1, len(e2), len(e2)), e2, c='r', label="Errors w/ 10-fold CV")
 plt.scatter(np.linspace(1, len(e3), len(e3)), e3, c='y', label="Errors w/ 20-fold CV")
 plt.scatter(np.linspace(1, len(e4), len(e4)), e4, c='m', label="Errors w/ 25-fold CV")
-plt.scatter(np.linspace(1, len(e5), len(e5)), e5, c='g', label="Training errors")
+plt.scatter(np.linspace(1, len(RSS), len(RSS)),RSS, c='g', label="Training errors")
 plt.hlines(0, xmin=0, xmax=len(e1), colors='k', label="Zero error line")
 plt.title("Plot: Error Values")
 plt.xlabel("Prediction no.")
@@ -497,45 +458,6 @@ plt.ylabel("Error")
 plt.xticks(np.arange(1, len(e1), 2))
 plt.legend()
 plt.show()
-
-
-
-
-
-
-# for i in range(1, 5):
-#     train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 5 * i)
-#     coefficients = MultipleLinearRegression(train_data, train_Y)
-#     Y_predictions = np.dot(test_data, coefficients)
-#     r_error= calculator_error(test_Y, Y_predictions, "rSquare")
-#     MSE = calculator_error(test_Y, Y_predictions, "MSE")
-#     MAE = calculator_error(test_Y, Y_predictions, "MAE")
-#     RMSE = calculator_error(test_Y, Y_predictions, "RMSE")
-#     rmse = np.append(rmse, RMSE)
-#     mse = np.append(mse, MSE)
-#     mae = np.append(mae, MAE)
-#     r_square = np.append(r_square, r_error)
-#     print("For k = ", i*5)
-#     print("R^2 = ", r_error)
-#     print("MAE = ", MAE)
-#     print("MSE = ", MSE)
-#     print("RMSE = ", RMSE)
-#     print()
-
-
- 
- 
-# plt.plot(r_square)
-# plt.show()
-
-# plt.plot(mse)
-# plt.show()
-
-# plt.plot(mae)
-# plt.show()
-
-# plt.plot(rmse)
-# plt.show()
 
 
 
