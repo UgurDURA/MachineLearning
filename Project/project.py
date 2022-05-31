@@ -286,7 +286,7 @@ def calculator_error(y_actual, y_pred, metric):
     MSE = np.mean(rss)
     RMSE = np.sqrt(MSE)
 
-    if metric == "rSquare":
+    if metric == "RSquare":
         return r_square
     elif metric == "MSE":
         return MSE
@@ -304,16 +304,16 @@ def calculator_error(y_actual, y_pred, metric):
 
 
 
-def kFold(matrix, y, k):
+# def kFold(matrix, y, k):
 
-    splited_matrix = np.array_split(matrix, k)
-    train_data = np.concatenate(np.delete(splited_matrix, k-1, axis=0))
-    test_data = splited_matrix[k-1]
-    y_splitted = np.array_split(y,k)
-    train_Y = np.concatenate(np.delete(y_splitted, k-1, axis=0))
-    test_Y = y_splitted[k-1]
+#     splited_matrix = np.array_split(matrix, k)
+#     train_data = np.concatenate(np.delete(splited_matrix, k-1, axis=0))
+#     test_data = splited_matrix[k-1]
+#     y_splitted = np.array_split(y,k)
+#     train_Y = np.concatenate(np.delete(y_splitted, k-1, axis=0))
+#     test_Y = y_splitted[k-1]
 
-    return train_data, test_data, train_Y, test_Y
+#     return train_data, test_data, train_Y, test_Y
 
 # train_data, test_data, train_Y, test_Y = kFold(X_Matrix,Y,60)
 
@@ -334,11 +334,11 @@ def MultipleLinearRegression(X_matrix, Y_actual):
 
     return B_hat
 
-train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 25)
-coefficients = MultipleLinearRegression(train_data, train_Y)
-Y_predictions = np.dot(train_data, coefficients)
-print("Y Predictions : ")
-print(Y_predictions)
+# train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 25)
+# coefficients = MultipleLinearRegression(train_data, train_Y)
+# Y_predictions = np.dot(train_data, coefficients)
+# print("Y Predictions : ")
+# print(Y_predictions)
 
 
 # r_error= calculator_error(train_Y, Y_predictions, "rSquare")
@@ -388,25 +388,114 @@ r_square = np.array([])
 mae = np.array([])
 rmse = np.array([])
 
+
+def mullin_coef(X, y):
+    # Calculating coefficients using the linear algebra equation:
+    B_hat = np.dot(X.T, X)
+    B_hat = np.linalg.inv(B_hat)
+    B_hat = np.dot(B_hat, X.T)
+    B_hat = np.dot(B_hat, y)
+
+    return B_hat
+
+
+def k_fold_cv(X, y, k):
+
+    cv_hat = np.array([])
+
+    fold_size = int(len(X_1) / k)
+    for i in range(0, len(X_1), fold_size):  # For each fold:
+
+        X_test = X[i:i + fold_size]  # Determine test input data
+        y_test = y[i:i + fold_size]  # Determine test output data
+        X_train = np.delete(X, range(i, i + fold_size), 0)  # Determine train input data
+        y_train = np.delete(y, range(i, i + fold_size), 0)  # Determine train output data
+
+        # Calculate coefficients using the linear algebra equation (with train input and output)
+        B_hat = mullin_coef(X_train, y_train)
+
+        # Calculate predictions with test input
+        y_hat = np.dot(X_test, B_hat)
+
+        # Append the predictions to cv_hat
+        cv_hat = np.append(cv_hat, y_hat)
+
+    return cv_hat
+
 print("Multiple Regression with k-fold Validation")
-for i in range(1, 5):
-    train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 5 * i)
-    coefficients = MultipleLinearRegression(train_data, train_Y)
-    Y_predictions = np.dot(test_data, coefficients)
-    r_error= calculator_error(test_Y, Y_predictions, "rSquare")
-    MSE = calculator_error(test_Y, Y_predictions, "MSE")
-    MAE = calculator_error(test_Y, Y_predictions, "MAE")
-    RMSE = calculator_error(test_Y, Y_predictions, "RMSE")
-    rmse = np.append(rmse, RMSE)
-    mse = np.append(mse, MSE)
-    mae = np.append(mae, MAE)
-    r_square = np.append(r_square, r_error)
-    print("For k = ", i*5)
-    print("R^2 = ", r_error)
-    print("MAE = ", MAE)
-    print("MSE = ", MSE)
-    print("RMSE = ", RMSE)
-    print()
+
+print(X_combined_matrix)
+
+p1 = k_fold_cv(X_Matrix,Y,5)
+p2 = k_fold_cv(X_Matrix,Y,10)
+p3 = k_fold_cv(X_Matrix,Y,20)
+p4 = k_fold_cv(X_Matrix,Y,25)
+
+
+e1 = Y-p1
+e2 = Y-p2
+e3 = Y-p3
+e4 = Y-p4
+
+MultipleLinearRegression_RSquareError_CV = np.array([],dtype=float64)
+MultipleLinearRegression_RSquareError_CV = np.append(MultipleLinearRegression_RSquareError_CV, calculator_error(Y, p1, "RSquare") )
+MultipleLinearRegression_RSquareError_CV = np.append(MultipleLinearRegression_RSquareError_CV, calculator_error(Y, p2, "RSquare") )
+MultipleLinearRegression_RSquareError_CV = np.append(MultipleLinearRegression_RSquareError_CV, calculator_error(Y, p3, "RSquare") )
+MultipleLinearRegression_RSquareError_CV = np.append(MultipleLinearRegression_RSquareError_CV, calculator_error(Y, p4, "RSquare") )
+
+coefficients = mullin_coef(X_Matrix, Y)
+p5 = np.dot(X_Matrix, coefficients)
+e5 = Y-p5
+
+# plt.plot(e1)
+# plt.plot(e2)
+# plt.plot(e3)
+# plt.plot(e4)
+# plt.plot(e5)
+
+plt.plot(MultipleLinearRegression_RSquareError_CV)
+# plt.plot(e2_1)
+# plt.plot(e3_1)
+# plt.plot(e4_1)
+
+plt.show()
+ 
+plt.scatter(np.linspace(1, len(e1), len(e1)), e1, c='b', label="Errors w/ 5-fold CV")
+plt.scatter(np.linspace(1, len(e2), len(e2)), e2, c='r', label="Errors w/ 10-fold CV")
+plt.scatter(np.linspace(1, len(e3), len(e3)), e3, c='y', label="Errors w/ 20-fold CV")
+plt.scatter(np.linspace(1, len(e4), len(e4)), e4, c='m', label="Errors w/ 25-fold CV")
+plt.scatter(np.linspace(1, len(e5), len(e5)), e5, c='g', label="Training errors")
+plt.hlines(0, xmin=0, xmax=len(e1), colors='k', label="Zero error line")
+plt.title("Plot: Error Values")
+plt.xlabel("Prediction no.")
+plt.ylabel("Error")
+plt.xticks(np.arange(1, len(e1), 2))
+plt.legend()
+plt.show()
+
+
+
+
+
+
+# for i in range(1, 5):
+#     train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 5 * i)
+#     coefficients = MultipleLinearRegression(train_data, train_Y)
+#     Y_predictions = np.dot(test_data, coefficients)
+#     r_error= calculator_error(test_Y, Y_predictions, "rSquare")
+#     MSE = calculator_error(test_Y, Y_predictions, "MSE")
+#     MAE = calculator_error(test_Y, Y_predictions, "MAE")
+#     RMSE = calculator_error(test_Y, Y_predictions, "RMSE")
+#     rmse = np.append(rmse, RMSE)
+#     mse = np.append(mse, MSE)
+#     mae = np.append(mae, MAE)
+#     r_square = np.append(r_square, r_error)
+#     print("For k = ", i*5)
+#     print("R^2 = ", r_error)
+#     print("MAE = ", MAE)
+#     print("MSE = ", MSE)
+#     print("RMSE = ", RMSE)
+#     print()
 
 
  
