@@ -504,6 +504,42 @@ for i in range (0,4):
     print("MAE Results Multi Linear Regressionwith Cross Validation: ", MultipleLinearRegression_MAEError_CV[i])
     print("======================================================================================================")
  
+# plt.scatter(np.linspace(1, len(e1), len(e1)), e1, c='b', label="Errors w/ 5-fold CV")
+# plt.scatter(np.linspace(1, len(e2), len(e2)), e2, c='r', label="Errors w/ 10-fold CV")
+# plt.scatter(np.linspace(1, len(e3), len(e3)), e3, c='y', label="Errors w/ 20-fold CV")
+# plt.scatter(np.linspace(1, len(e4), len(e4)), e4, c='m', label="Errors w/ 25-fold CV")
+# plt.scatter(np.linspace(1, len(RSS), len(RSS)),RSS, c='g', label="Training errors")
+# plt.hlines(0, xmin=0, xmax=len(e1), colors='k', label="Zero error line")
+# plt.title("Plot: Error Values")
+# plt.xlabel("Prediction no.")
+# plt.ylabel("Error")
+# plt.xticks(np.arange(1, len(e1), 2))
+# plt.legend()
+# plt.show()
+
+# plt.rcParams["figure.figsize"] = [7.50, 3.50]
+# plt.rcParams["figure.autolayout"] = True
+# x = [5,10,20,25]
+# default_x_ticks = range(len(x))
+# plt.xlabel("Test Size (%)")
+# plt.ylabel(" Mean of R^2 Results (Cross Validation)")
+# line1, = plt.plot(default_x_ticks,MultipleLinearRegression_RSquareError_CV, label="R^2")
+# plt.xticks(default_x_ticks, x)
+# plt.show()
+
+
+# plt.rcParams["figure.figsize"] = [7.50, 3.50]
+# plt.rcParams["figure.autolayout"] = True
+# x = [5,10,20,25]
+# default_x_ticks = range(len(x))
+# plt.xlabel("Test Size (%)")
+# plt.ylabel(" Mean of MSE Results (Cross Validation)")
+# line1, = plt.plot(default_x_ticks,MultipleLinearRegression_MSEError_CV, label="R^2")
+# plt.xticks(default_x_ticks, x)
+# plt.show()
+
+
+
 plt.show()
 
 
