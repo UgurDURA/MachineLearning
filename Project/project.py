@@ -651,6 +651,23 @@ plt.grid()
 
 plt.show()
 
+print()
+print("Ridge Regression")
+# best lambda using Cross Validation
+rid2 = RidgeCV(alphas=lam, normalize=True)
+rid2.fit(train_data, train_Y)
+print("Best Lambda Value for Ridge Regression: ", rid2.alpha_)
+# ridge regression
+rid3 = RidgeCV(alphas=rid2.alpha_, normalize=True)
+rid3.fit(train_data, train_Y)
+MSE_Ridge = calculator_error(test_Y, rid3.predict(test_data), "MSE")
+RSquare_Ridge = calculator_error(test_Y, rid3.predict(test_data), "RSquare")
+print("R^2 = ", RSquare_Ridge)
+# print("MAE = ", mae_rig)
+print("MSE = ", MSE_Ridge)
+# print("RMSE = ", rmse_rig)
+print()
+
 
 
 ############################################################################################################################################
