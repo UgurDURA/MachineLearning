@@ -540,6 +540,73 @@ for i in range (0,4):
 
 
 
+############################################################################################################################################
+          #Lasso Regression with K-fold Cross Validation to Evaluate Predictor's Contribution and Possiable Shrinkages                                  
+############################################################################################################################################
+
+
+def k_fold_cv_Lasso(X, y, k):
+
+    cv_hat = np.array([])
+
+    fold_size = int(len(X_1) / k)
+    for i in range(0, len(X_1), fold_size):  # For each fold:
+
+        X_test = X[i:i + fold_size]  # Determine test input data
+        y_test = y[i:i + fold_size]  # Determine test output data
+        X_train = np.delete(X, range(i, i + fold_size), 0)  # Determine train input data
+        y_train = np.delete(y, range(i, i + fold_size), 0)  # Determine train output data
+
+
+        reg = Lasso(alpha=1)
+        reg.fit(X_train, y_train)
+
+        # Calculate coefficients using the linear algebra equation (with train input and output)
+         
+
+        # Calculate predictions with test input
+        y_hat = reg.predict(X_test)
+
+        # Append the predictions to cv_hat
+        cv_hat = np.append(cv_hat, y_hat)
+
+    return cv_hat
+
+p1_Lasso = k_fold_cv_Lasso(X_Matrix,Y,5)
+p2_Lasso = k_fold_cv_Lasso(X_Matrix,Y,10)
+p3_Lasso= k_fold_cv_Lasso(X_Matrix,Y,20)
+p4_Lasso= k_fold_cv_Lasso(X_Matrix,Y,25)
+
+
+
+
+Lasso_RSquareError_CV = np.array([],dtype=float64)
+Lasso_RSquareError_CV = np.append(Lasso_RSquareError_CV, calculator_error(Y, p1_Lasso, "RSquare") )
+Lasso_RSquareError_CV = np.append(Lasso_RSquareError_CV, calculator_error(Y, p2_Lasso, "RSquare") )
+Lasso_RSquareError_CV = np.append(Lasso_RSquareError_CV, calculator_error(Y, p3_Lasso, "RSquare") )
+Lasso_RSquareError_CV = np.append(Lasso_RSquareError_CV, calculator_error(Y, p4_Lasso, "RSquare") )
+
+Lasso_MSEError_CV = np.array([],dtype=float64)
+Lasso_MSEError_CV= np.append(Lasso_MSEError_CV, calculator_error(Y, p1_Lasso, "MSE") )
+Lasso_MSEError_CV = np.append(Lasso_MSEError_CV, calculator_error(Y, p2_Lasso, "MSE") )
+Lasso_MSEError_CV = np.append(Lasso_MSEError_CV, calculator_error(Y, p3_Lasso, "MSE") )
+Lasso_MSEError_CV = np.append(Lasso_MSEError_CV, calculator_error(Y, p4_Lasso, "MSE") )
+
+Lasso_MAEError_CV = np.array([],dtype=float64)
+Lasso_MAEError_CV  = np.append(Lasso_MAEError_CV , calculator_error(Y,p1_Lasso, "MAE"))
+Lasso_MAEError_CV  = np.append(Lasso_MAEError_CV , calculator_error(Y,p2_Lasso, "MAE"))
+Lasso_MAEError_CV = np.append(Lasso_MAEError_CV , calculator_error(Y,p3_Lasso, "MAE"))
+Lasso_MAEError_CV  = np.append(Lasso_MAEError_CV , calculator_error(Y,p4_Lasso, "MAE"))
+
+
+for i in range (0,4):
+    print("======================================================================================================")
+    print("R^2 Results of Lasso with Cross Validation: " , Lasso_RSquareError_CV[i])
+    print("MSE Results of Lasso with Cross Validation:" , Lasso_MSEError_CV[i])
+    print("MAE Results of Lasso with Cross Validation: ", Lasso_MAEError_CV[i])
+    print("======================================================================================================")
+
+
 plt.show()
 
 
