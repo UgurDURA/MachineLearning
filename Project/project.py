@@ -668,6 +668,26 @@ print("MSE = ", MSE_Ridge)
 # print("RMSE = ", rmse_rig)
 print()
 
+print("Lasso Regression")
+# best lambda using Cross-Validation
+las2 = LassoCV(alphas=None, cv=10, normalize=True)
+las2.fit(train_data, train_Y)
+print("Best Lambda Value for Lasso Regression: ", las2.alpha_)
+# lasso regression
+las.set_params(alpha=las2.alpha_)
+las.fit(train_data, train_Y)
+
+MSE_Lasso = calculator_error(test_Y, las.predict(test_data), "MSE")
+RSqaure_Lasso = calculator_error(test_Y, las.predict(test_data), "RSquare")
+print("R^2 = ", RSqaure_Lasso)
+# print("MAE = ", mae_las)
+print("MSE = ", MSE_Lasso)
+# print("RMSE = ", rmse_las)
+print()
+
+
+
+     
 
 
 ############################################################################################################################################
