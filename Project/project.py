@@ -607,6 +607,48 @@ for i in range (0,4):
     print("======================================================================================================")
 
 
+############################################################################################################################################
+          #Lasso Regression with K-fold Cross Validation Alpha Determination                                
+############################################################################################################################################
+
+n_lam = 200
+lam = np.logspace(10, -2, n_lam)
+las = Lasso(normalize=True)
+coef_rig = []
+coef_las = []
+titles = ["x1", "x2", "x3", "x4", "x5", "y"]
+
+train_data, test_data, train_Y, test_Y = Split(X_Matrix, Y, 10)
+
+
+for i in lam:
+    rid = Ridge(alpha=i)
+    rid.fit(train_data, train_Y)
+    coef_rig.append(rid.coef_)
+    las.set_params(alpha=i)
+    las.fit(train_data, train_Y)
+    coef_las.append(las.coef_)
+
+np.shape(coef_rig)
+
+plt.figure()
+plt.plot(lam, coef_rig)
+plt.xscale('log')
+plt.xlabel('Lambda')
+plt.axis('tight')
+plt.legend(titles)
+plt.title("Ridge Regression")
+plt.grid()
+
+plt.figure()
+plt.plot(lam, coef_las)
+plt.xscale('log')
+plt.xlabel('Lambda')
+plt.axis('tight')
+plt.legend(titles)
+plt.title("Lasso Regression")
+plt.grid()
+
 plt.show()
 
 
