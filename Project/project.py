@@ -11,8 +11,12 @@ from scipy.stats import gaussian_kde
 from scipy.stats import shapiro
 from numpy import float64, linspace
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
 from sklearn.tree import export_text
 import rfpimp
+from sklearn.pipeline import make_pipeline
+
+from sklearn.linear_model import  Ridge, RidgeCV, Lasso, LassoCV
 
 
 np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)   
@@ -62,8 +66,9 @@ print(Y)
 X_combined_matrix = np.column_stack((X_1, X_2, X_3, X_4, X_5, X_6,))                            #[Comment] Combine the numpy arrays into one matrix
 print(X_combined_matrix)
 
+X_combined_matrix_with_Y = np.column_stack((X_1, X_2, X_3, X_4, X_5, X_6,Y))      
 pandasDF = pd.DataFrame(X_combined_matrix, columns=['X1', 'X2', 'X3', 'X4', 'X5', 'X6'])        #[Comment] Alter the numpy to pandas data frame for further examinations
-
+pandasDF_with_Y = pd.DataFrame(X_combined_matrix_with_Y, columns=['X1', 'X2', 'X3', 'X4', 'X5', 'X6', 'Y'])   
 print(pandasDF)
 
 ############################################################################################################################################
@@ -243,11 +248,13 @@ def calculate_PDF_NonParametric(columnName):
                                             #Examine the Correlation 
 ############################################################################################################################################
 
-# correlationResult = pandasDF.corr(method='spearman')
+# correlationResult = pandasDF_with_Y.corr(method='spearman')
 
 # figure = sns.heatmap(correlationResult, cmap = "Blues", annot = True, xticklabels = correlationResult.columns, yticklabels = correlationResult.columns).get_figure()
 
-# figure.savefig("CorrelationMatrix_Sperman.png", dpi = 1200)
+# figure.savefig("CorrelationMatrix_Sperman5.png", dpi = 1200)
+
+# plt.show
 
 vif_data = pd.DataFrame()
 vif_data["feature"] = pandasDF.columns
@@ -304,7 +311,7 @@ def calculator_error(y_actual, y_pred, metric):
 
 
 
-def kFold(matrix, y, k):
+def Split(matrix, y, k):
 
     splited_matrix = np.array_split(matrix, k)
     train_data = np.concatenate(np.delete(splited_matrix, k-1, axis=0))
@@ -315,7 +322,7 @@ def kFold(matrix, y, k):
 
     return train_data, test_data, train_Y, test_Y
 
-train_data, test_data, train_Y, test_Y = kFold(X_Matrix,Y,60)
+train_data, test_data, train_Y, test_Y = Split(X_Matrix,Y,60)
 
 # print("Training Data")
 # print(train_data)
@@ -347,7 +354,7 @@ mae = np.array([])
 rmse = np.array([])
 
 for i in range(1,6):
-    train_data, test_data, train_Y, test_Y = kFold(X_Matrix, Y, 5 * i)
+    train_data, test_data, train_Y, test_Y = Split(X_Matrix, Y, 5 * i)
     coefficients = mullin_coef(train_data, train_Y)
     Y_predictions_MultiLinearRegression = np.dot(test_data, coefficients)
     r_error= calculator_error(test_Y, Y_predictions_MultiLinearRegression, "RSquare")
@@ -365,15 +372,15 @@ for i in range(1,6):
     print("RMSE = ", RMSE)
     print()
 
-plt.rcParams["figure.figsize"] = [7.50, 3.50]
-plt.rcParams["figure.autolayout"] = True
-x = [5,10,15,20,25]
-default_x_ticks = range(len(x))
-plt.xlabel("Test Size (%)")
-plt.ylabel("R^2 Results")
-line1, = plt.plot(default_x_ticks,r_square, label="R^2")
-plt.xticks(default_x_ticks, x)
-plt.show()
+# plt.rcParams["figure.figsize"] = [7.50, 3.50]
+# plt.rcParams["figure.autolayout"] = True
+# x = [5,10,15,20,25]
+# default_x_ticks = range(len(x))
+# plt.xlabel("Test Size (%)")
+# plt.ylabel("R^2 Results")
+# line1, = plt.plot(default_x_ticks,r_square, label="R^2")
+# plt.xticks(default_x_ticks, x)
+# plt.show()
 # line2, = plt.plot(mse, label="MSE")
 # line3, = plt.plot(mae, label="MAE")
 # line4, = plt.plot(rmse, label="RMSE")
@@ -492,22 +499,11 @@ MultipleLinearRegression_MAEError_CV = np.append(MultipleLinearRegression_MAEErr
 
 for i in range (0,4):
     print("======================================================================================================")
-    print("R^2 Results with Cross Validation: " , MultipleLinearRegression_RSquareError_CV[i])
-    print("MSE Results with Cross Validation:" , MultipleLinearRegression_MSEError_CV[i])
-    print("MAE Results with Cross Validation: ", MultipleLinearRegression_MAEError_CV[i])
+    print("R^2 Results of Multi Linear Regression with Cross Validation: " , MultipleLinearRegression_RSquareError_CV[i])
+    print("MSE Results Multi Linear Regressionwith Cross Validation:" , MultipleLinearRegression_MSEError_CV[i])
+    print("MAE Results Multi Linear Regressionwith Cross Validation: ", MultipleLinearRegression_MAEError_CV[i])
     print("======================================================================================================")
  
-plt.scatter(np.linspace(1, len(e1), len(e1)), e1, c='b', label="Errors w/ 5-fold CV")
-plt.scatter(np.linspace(1, len(e2), len(e2)), e2, c='r', label="Errors w/ 10-fold CV")
-plt.scatter(np.linspace(1, len(e3), len(e3)), e3, c='y', label="Errors w/ 20-fold CV")
-plt.scatter(np.linspace(1, len(e4), len(e4)), e4, c='m', label="Errors w/ 25-fold CV")
-plt.scatter(np.linspace(1, len(RSS), len(RSS)),RSS, c='g', label="Training errors")
-plt.hlines(0, xmin=0, xmax=len(e1), colors='k', label="Zero error line")
-plt.title("Plot: Error Values")
-plt.xlabel("Prediction no.")
-plt.ylabel("Error")
-plt.xticks(np.arange(1, len(e1), 2))
-plt.legend()
 plt.show()
 
 
