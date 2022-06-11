@@ -38,10 +38,26 @@ X_5 = np.array([],dtype=float64)
 X_6 = np.array([],dtype=float64)
 Y= np.array([],dtype=float64)
 
+
+sampleNoTest = np.array([], dtype=float64)
+X_1Test= np.array([],dtype=float64)
+X_2Test = np.array([],dtype=float64)
+X_3Test = np.array([],dtype=float64)
+X_4Test  = np.array([],dtype=float64)
+X_5Test = np.array([],dtype=float64)
+X_6Test = np.array([],dtype=float64)
+Y_Result= np.array([],dtype=float64)
+
+
 with open('Project/data.csv', encoding="utf8", errors='ignore') as f:                       #[Comment] Get the data as Numpy 
     data = list(csv.reader(f, delimiter=';'))
-
+    
 print(data)
+
+
+with open('Project/TestMatrix.csv', encoding="utf8", errors='ignore') as f:                       #[Comment] Get the data as Numpy 
+    TestMatrix = list(csv.reader(f, delimiter=';'))
+
 
 for row in data:
     if row != data[0]:
@@ -54,17 +70,37 @@ for row in data:
         X_6= np.append(X_6, int(row[6]))
         Y= np.append(Y, int(row[7]))
 
+for row in TestMatrix:
+        sampleNo= np.append(sampleNo,int(row[0]))                                            #[Comment] Assign each value into different numpy arrays
+        X_1Test= np.append(X_1Test,int(row[1]))
+        X_2Test= np.append(X_2Test, int(row[2]))
+        X_3Test= np.append(X_3Test,int(row[3]))
+        X_4Test= np.append(X_4Test, int(row[4]))
+        X_5Test= np.append(X_5Test,int(row[5]))
+        X_6Test= np.append(X_6Test, int(row[6]))
 
-print(X_1)
-print(X_2)
-print(X_3)
-print(X_4)
-print(X_5)
-print(X_6)
-print(Y)
+# print(X_1)
+# print(X_2)
+# print(X_3)
+# print(X_4)
+# print(X_5)
+# print(X_6)
+# print(Y)
+
+print(X_1Test)
+print(X_2Test)
+print(X_3Test)
+print(X_4Test)
+print(X_5Test)
+print(X_6Test)
+ 
 
 X_combined_matrix = np.column_stack((X_1, X_2, X_3, X_4, X_5, X_6,))                            #[Comment] Combine the numpy arrays into one matrix
 print(X_combined_matrix)
+
+X_TestMatrix = np.column_stack((X_1Test, X_2Test, X_3Test, X_4Test, X_5Test, X_6Test,))                            #[Comment] Combine the numpy arrays into one matrix
+print(X_TestMatrix)
+
 
 X_combined_matrix_with_Y = np.column_stack((X_1, X_2, X_3, X_4, X_5, X_6,Y))      
 pandasDF = pd.DataFrame(X_combined_matrix, columns=['X1', 'X2', 'X3', 'X4', 'X5', 'X6'])        #[Comment] Alter the numpy to pandas data frame for further examinations
